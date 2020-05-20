@@ -508,7 +508,12 @@ static void clear_touches() {
 			int tid = get_touch_id(touch);
 			ERR_FAIL_COND(tid == -1);
 			CGPoint touchPoint = [touch locationInView:self];
-			OSIPhone::get_singleton()->touch_press(tid, touchPoint.x * self.contentScaleFactor, touchPoint.y * self.contentScaleFactor, true, touch.tapCount > 1);
+			
+            if (touch.type == UITouchTypeStylus) {
+                OSIPhone::get_singleton()->stylus_press(tid, touchPoint.x * self.contentScaleFactor, touchPoint.y * self.contentScaleFactor, true, touch.tapCount > 1);
+            } else {
+                OSIPhone::get_singleton()->touch_press(tid, touchPoint.x * self.contentScaleFactor, touchPoint.y * self.contentScaleFactor, true, touch.tapCount > 1);
+            }
 		};
 	};
 }
@@ -527,7 +532,12 @@ static void clear_touches() {
 			ERR_FAIL_COND(tid == -1);
 			CGPoint touchPoint = [touch locationInView:self];
 			CGPoint prev_point = [touch previousLocationInView:self];
-			OSIPhone::get_singleton()->touch_drag(tid, prev_point.x * self.contentScaleFactor, prev_point.y * self.contentScaleFactor, touchPoint.x * self.contentScaleFactor, touchPoint.y * self.contentScaleFactor);
+            
+            if (touch.type == UITouchTypeStylus) {
+                OSIPhone::get_singleton()->stylus_drag(tid, prev_point.x * self.contentScaleFactor, prev_point.y * self.contentScaleFactor, touchPoint.x * self.contentScaleFactor, touchPoint.y * self.contentScaleFactor);
+            } else {
+                OSIPhone::get_singleton()->touch_drag(tid, prev_point.x * self.contentScaleFactor, prev_point.y * self.contentScaleFactor, touchPoint.x * self.contentScaleFactor, touchPoint.y * self.contentScaleFactor);
+            }
 		};
 	};
 }
@@ -545,7 +555,12 @@ static void clear_touches() {
 			ERR_FAIL_COND(tid == -1);
 			remove_touch(touch);
 			CGPoint touchPoint = [touch locationInView:self];
-			OSIPhone::get_singleton()->touch_press(tid, touchPoint.x * self.contentScaleFactor, touchPoint.y * self.contentScaleFactor, false, false);
+            
+            if (touch.type == UITouchTypeStylus) {
+                OSIPhone::get_singleton()->stylus_press(tid, touchPoint.x * self.contentScaleFactor, touchPoint.y * self.contentScaleFactor, false, false);
+            } else {
+                OSIPhone::get_singleton()->touch_press(tid, touchPoint.x * self.contentScaleFactor, touchPoint.y * self.contentScaleFactor, false, false);
+            }
 		};
 	};
 }

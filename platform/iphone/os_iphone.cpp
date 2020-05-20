@@ -245,15 +245,45 @@ void OSIPhone::touch_press(int p_idx, int p_x, int p_y, bool p_pressed, bool p_d
 
 void OSIPhone::touch_drag(int p_idx, int p_prev_x, int p_prev_y, int p_x, int p_y) {
 
-	if (!GLOBAL_DEF("debug/disable_touch", false)) {
+    if (!GLOBAL_DEF("debug/disable_touch", false)) {
 
-		Ref<InputEventScreenDrag> ev;
-		ev.instance();
-		ev->set_index(p_idx);
-		ev->set_position(Vector2(p_x, p_y));
-		ev->set_relative(Vector2(p_x - p_prev_x, p_y - p_prev_y));
-		queue_event(ev);
-	};
+        Ref<InputEventScreenDrag> ev;
+        ev.instance();
+        ev->set_index(p_idx);
+        ev->set_position(Vector2(p_x, p_y));
+        ev->set_relative(Vector2(p_x - p_prev_x, p_y - p_prev_y));
+        queue_event(ev);
+    };
+};
+
+void OSIPhone::stylus_press(int p_idx, int p_x, int p_y, bool p_pressed, bool p_doubleclick) {
+
+    if (!GLOBAL_DEF("debug/disable_touch", false)) {
+
+        Ref<InputEventMouseButton> ev;
+        ev.instance();
+        ev->set_button_index(1);
+        ev->set_button_mask(p_pressed ? 1 : 0);
+        ev->set_position(Vector2(p_x, p_y));
+        ev->set_global_position(Vector2(p_x, p_y));
+        ev->set_pressed(p_pressed);
+        ev->set_doubleclick(p_doubleclick);
+        queue_event(ev);
+    };
+};
+
+void OSIPhone::stylus_drag(int p_idx, int p_prev_x, int p_prev_y, int p_x, int p_y) {
+
+    if (!GLOBAL_DEF("debug/disable_touch", false)) {
+
+        Ref<InputEventMouseMotion> ev;
+        ev.instance();
+        ev->set_button_mask(1);
+        ev->set_position(Vector2(p_x, p_y));
+        ev->set_global_position(Vector2(p_x, p_y));
+        ev->set_relative(Vector2(p_x - p_prev_x, p_y - p_prev_y));
+        queue_event(ev);
+    };
 };
 
 void OSIPhone::queue_event(const Ref<InputEvent> &p_event) {

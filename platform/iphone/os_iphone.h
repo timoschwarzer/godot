@@ -124,7 +124,9 @@ public:
 	uint8_t get_orientations() const;
 
 	void touch_press(int p_idx, int p_x, int p_y, bool p_pressed, bool p_doubleclick);
-	void touch_drag(int p_idx, int p_prev_x, int p_prev_y, int p_x, int p_y);
+    void touch_drag(int p_idx, int p_prev_x, int p_prev_y, int p_x, int p_y);
+    void stylus_press(int p_idx, int p_x, int p_y, bool p_pressed, bool p_doubleclick);
+    void stylus_drag(int p_idx, int p_prev_x, int p_prev_y, int p_x, int p_y);
 	void touches_cancelled();
 	void key(uint32_t p_key, bool p_pressed);
 	void set_virtual_keyboard_height(int p_height);

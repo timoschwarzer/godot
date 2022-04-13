@@ -158,6 +158,7 @@ private:
 		float rotation;
 		Vector2 scale;
 		Vector2 pivot_offset;
+		Vector2 position_offset;
 
 		bool pending_resize;
 
@@ -375,6 +376,9 @@ public:
 
 	void set_scale(const Vector2 &p_scale);
 	Vector2 get_scale() const;
+
+	void set_position_offset(const Vector2 &p_position);
+	Vector2 get_position_offset() const;
 
 	void show_modal(bool p_exclusive = false);
 

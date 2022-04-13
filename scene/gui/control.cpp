@@ -53,6 +53,7 @@ Dictionary Control::_edit_get_state() const {
 	s["rotation"] = get_rotation();
 	s["scale"] = get_scale();
 	s["pivot"] = get_pivot_offset();
+	s["position"] = get_position_offset();
 	Array anchors;
 	anchors.push_back(get_anchor(MARGIN_LEFT));
 	anchors.push_back(get_anchor(MARGIN_TOP));
@@ -71,12 +72,13 @@ Dictionary Control::_edit_get_state() const {
 void Control::_edit_set_state(const Dictionary &p_state) {
 	ERR_FAIL_COND((p_state.size() <= 0) ||
 			!p_state.has("rotation") || !p_state.has("scale") ||
-			!p_state.has("pivot") || !p_state.has("anchors") || !p_state.has("margins"));
+			!p_state.has("pivot") || !p_state.has("anchors") || !p_state.has("margins") || !p_state.has("position"));
 	Dictionary state = p_state;
 
 	set_rotation(state["rotation"]);
 	set_scale(state["scale"]);
 	set_pivot_offset(state["pivot"]);
+	set_position_offset(state["position"]);
 	Array anchors = state["anchors"];
 	data.anchor[MARGIN_LEFT] = anchors[0];
 	data.anchor[MARGIN_TOP] = anchors[1];
@@ -207,6 +209,7 @@ Size2 Control::get_combined_minimum_size() const {
 
 Transform2D Control::_get_internal_transform() const {
 	Transform2D rot_scale;
+	rot_scale.set_origin(data.position_offset);
 	rot_scale.set_rotation_and_scale(data.rotation, data.scale);
 	Transform2D offset;
 	offset.set_origin(-data.pivot_offset);
@@ -2489,6 +2492,17 @@ Vector2 Control::get_pivot_offset() const {
 	return data.pivot_offset;
 }
 
+void Control::set_position_offset(const Vector2 &p_position) {
+	data.position_offset = p_position;
+	update();
+	_notify_transform();
+	_change_notify("rect_position_offset");
+}
+
+Vector2 Control::get_position_offset() const {
+	return data.position_offset;
+}
+
 void Control::set_scale(const Vector2 &p_scale) {
 	data.scale = p_scale;
 	// Avoid having 0 scale values, can lead to errors in physics and rendering.
@@ -2646,6 +2660,7 @@ void Control::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_rotation_degrees", "degrees"), &Control::set_rotation_degrees);
 	ClassDB::bind_method(D_METHOD("set_scale", "scale"), &Control::set_scale);
 	ClassDB::bind_method(D_METHOD("set_pivot_offset", "pivot_offset"), &Control::set_pivot_offset);
+	ClassDB::bind_method(D_METHOD("set_position_offset", "position_offset"), &Control::set_position_offset);
 	ClassDB::bind_method(D_METHOD("get_margin", "margin"), &Control::get_margin);
 	ClassDB::bind_method(D_METHOD("get_begin"), &Control::get_begin);
 	ClassDB::bind_method(D_METHOD("get_end"), &Control::get_end);
@@ -2655,6 +2670,7 @@ void Control::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_rotation_degrees"), &Control::get_rotation_degrees);
 	ClassDB::bind_method(D_METHOD("get_scale"), &Control::get_scale);
 	ClassDB::bind_method(D_METHOD("get_pivot_offset"), &Control::get_pivot_offset);
+	ClassDB::bind_method(D_METHOD("get_position_offset"), &Control::get_position_offset);
 	ClassDB::bind_method(D_METHOD("get_custom_minimum_size"), &Control::get_custom_minimum_size);
 	ClassDB::bind_method(D_METHOD("get_parent_area_size"), &Control::get_parent_area_size);
 	ClassDB::bind_method(D_METHOD("get_global_position"), &Control::get_global_position);
@@ -2808,6 +2824,7 @@ void Control::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::REAL, "rect_rotation", PROPERTY_HINT_RANGE, "-360,360,0.1,or_lesser,or_greater"), "set_rotation_degrees", "get_rotation_degrees");
 	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "rect_scale"), "set_scale", "get_scale");
 	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "rect_pivot_offset"), "set_pivot_offset", "get_pivot_offset");
+	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "rect_position_offset"), "set_position_offset", "get_position_offset");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "rect_clip_content"), "set_clip_contents", "is_clipping_contents");
 
 	ADD_GROUP("Hint", "hint_");

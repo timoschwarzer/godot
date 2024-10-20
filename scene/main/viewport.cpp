@@ -488,17 +488,25 @@ int Viewport::_sub_window_find(Window *p_window) const {
 	return -1;
 }
 
-void Viewport::_update_viewport_path() {
+void Viewport::_update_viewport_path() const {
 	if (viewport_textures.is_empty()) {
 		return;
 	}
 
-	Node *scene_root = get_scene_file_path().is_empty() ? get_owner() : this;
-	if (!scene_root && is_inside_tree()) {
+	const Node *scene_root = nullptr;
+
+	if (get_scene_file_path().is_empty()) {
+		scene_root = get_owner();
+	} else if (is_inside_tree()) {
 		scene_root = get_tree()->get_edited_scene_root();
 	}
+
+	if (scene_root == nullptr) {
+		scene_root = this;
+	}
+
 	if (scene_root && (scene_root == this || scene_root->is_ancestor_of(this))) {
-		NodePath path_in_scene = scene_root->get_path_to(this);
+		const NodePath path_in_scene = scene_root->get_path_to(this);
 		for (ViewportTexture *E : viewport_textures) {
 			E->path = path_in_scene;
 		}

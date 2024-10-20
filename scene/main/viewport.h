@@ -310,7 +310,7 @@ private:
 	Ref<ViewportTexture> default_texture;
 	HashSet<ViewportTexture *> viewport_textures;
 
-	void _update_viewport_path();
+	void _update_viewport_path() const;
 
 	SDFOversize sdf_oversize = SDF_OVERSIZE_120_PERCENT;
 	SDFScale sdf_scale = SDF_SCALE_50_PERCENT;

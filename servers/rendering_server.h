@@ -1152,6 +1152,8 @@ public:
 	virtual void viewport_set_vrs_update_mode(RID p_viewport, ViewportVRSUpdateMode p_mode) = 0;
 	virtual void viewport_set_vrs_texture(RID p_viewport, RID p_texture) = 0;
 
+	virtual void viewport_set_parallax_center(RID p_viewport, const Vector2 &p_parallax_center) = 0;
+
 	/* SKY API */
 
 	enum SkyMode {
@@ -1542,6 +1544,7 @@ public:
 	virtual void canvas_item_set_custom_rect(RID p_item, bool p_custom_rect, const Rect2 &p_rect = Rect2()) = 0;
 	virtual void canvas_item_set_modulate(RID p_item, const Color &p_color) = 0;
 	virtual void canvas_item_set_self_modulate(RID p_item, const Color &p_color) = 0;
+	virtual void canvas_item_set_parallax_depth(RID p_item, float p_parallax_depth) = 0;
 	virtual void canvas_item_set_visibility_layer(RID p_item, uint32_t p_visibility_layer) = 0;
 
 	virtual void canvas_item_set_draw_behind_parent(RID p_item, bool p_enable) = 0;

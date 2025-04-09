@@ -365,6 +365,7 @@ public:
 		Point2 repeat_size;
 		int repeat_times = 1;
 		Item *repeat_source_item = nullptr;
+		float parallax_depth = 0.f;
 
 		Rect2 global_rect_cache;
 

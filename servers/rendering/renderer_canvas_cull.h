@@ -194,6 +194,10 @@ public:
 	bool sdf_used = false;
 	bool snapping_2d_transforms_to_pixel = false;
 
+	Size2i viewport_size;
+	Vector2 viewport_parallax_center;
+	float viewport_parallax_max_depth = 100.f;  // TODO
+
 	bool debug_redraw = false;
 	double debug_redraw_time = 0;
 	Color debug_redraw_color;
@@ -219,7 +223,7 @@ private:
 	Transform2D _current_camera_transform;
 
 public:
-	void render_canvas(RID p_render_target, Canvas *p_canvas, const Transform2D &p_transform, RendererCanvasRender::Light *p_lights, RendererCanvasRender::Light *p_directional_lights, const Rect2 &p_clip_rect, RS::CanvasItemTextureFilter p_default_filter, RS::CanvasItemTextureRepeat p_default_repeat, bool p_snap_2d_transforms_to_pixel, bool p_snap_2d_vertices_to_pixel, uint32_t p_canvas_cull_mask, RenderingMethod::RenderInfo *r_render_info = nullptr);
+	void render_canvas(RID p_render_target, Canvas *p_canvas, const Transform2D &p_transform, RendererCanvasRender::Light *p_lights, RendererCanvasRender::Light *p_directional_lights, const Rect2 &p_clip_rect, RS::CanvasItemTextureFilter p_default_filter, RS::CanvasItemTextureRepeat p_default_repeat, bool p_snap_2d_transforms_to_pixel, bool p_snap_2d_vertices_to_pixel, uint32_t p_canvas_cull_mask, const Size2i &p_viewport_size, const Vector2 &p_viewport_parallax_center, RenderingMethod::RenderInfo *r_render_info = nullptr);
 
 	bool was_sdf_used();
 
@@ -249,6 +253,7 @@ public:
 	void canvas_item_set_custom_rect(RID p_item, bool p_custom_rect, const Rect2 &p_rect = Rect2());
 	void canvas_item_set_modulate(RID p_item, const Color &p_color);
 	void canvas_item_set_self_modulate(RID p_item, const Color &p_color);
+	void canvas_item_set_parallax_depth(RID p_item, float p_parallax_depth);
 
 	void canvas_item_set_draw_behind_parent(RID p_item, bool p_enable);
 	void canvas_item_set_use_identity_transform(RID p_item, bool p_enable);

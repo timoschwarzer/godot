@@ -678,6 +678,16 @@ bool CanvasItem::is_y_sort_enabled() const {
 	return y_sort_enabled;
 }
 
+void CanvasItem::set_parallax_depth(float p_parallax_depth) {
+	ERR_THREAD_GUARD;
+	parallax_depth = p_parallax_depth;
+	RS::get_singleton()->canvas_item_set_parallax_depth(canvas_item, p_parallax_depth);
+}
+
+float CanvasItem::get_parallax_depth() {
+	return parallax_depth;
+}
+
 void CanvasItem::draw_dashed_line(const Point2 &p_from, const Point2 &p_to, const Color &p_color, real_t p_width, real_t p_dash, bool p_aligned, bool p_antialiased) {
 	ERR_THREAD_GUARD;
 	ERR_DRAW_GUARD;
@@ -1331,6 +1341,9 @@ void CanvasItem::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_y_sort_enabled", "enabled"), &CanvasItem::set_y_sort_enabled);
 	ClassDB::bind_method(D_METHOD("is_y_sort_enabled"), &CanvasItem::is_y_sort_enabled);
 
+	ClassDB::bind_method(D_METHOD("set_parallax_depth", "depth"), &CanvasItem::set_parallax_depth);
+	ClassDB::bind_method(D_METHOD("get_parallax_depth"), &CanvasItem::get_parallax_depth);
+
 	ClassDB::bind_method(D_METHOD("set_draw_behind_parent", "enable"), &CanvasItem::set_draw_behind_parent);
 	ClassDB::bind_method(D_METHOD("is_draw_behind_parent_enabled"), &CanvasItem::is_draw_behind_parent_enabled);
 
@@ -1428,6 +1441,9 @@ void CanvasItem::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "z_index", PROPERTY_HINT_RANGE, itos(RS::CANVAS_ITEM_Z_MIN) + "," + itos(RS::CANVAS_ITEM_Z_MAX) + ",1"), "set_z_index", "get_z_index");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "z_as_relative"), "set_z_as_relative", "is_z_relative");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "y_sort_enabled"), "set_y_sort_enabled", "is_y_sort_enabled");
+
+	ADD_GROUP("Visual Parallax", "");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "parallax_depth"), "set_parallax_depth", "get_parallax_depth");
 
 	ADD_GROUP("Texture", "texture_");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "texture_filter", PROPERTY_HINT_ENUM, "Inherit,Nearest,Linear,Nearest Mipmap,Linear Mipmap,Nearest Mipmap Anisotropic,Linear Mipmap Anisotropic"), "set_texture_filter", "get_texture_filter");

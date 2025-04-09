@@ -753,6 +753,8 @@ public:
 	FUNC2(viewport_set_vrs_update_mode, RID, ViewportVRSUpdateMode)
 	FUNC2(viewport_set_vrs_texture, RID, RID)
 
+	FUNC2(viewport_set_parallax_center, RID, const Vector2 &)
+
 	/* COMPOSITOR EFFECT */
 
 #undef server_name
@@ -960,6 +962,7 @@ public:
 	FUNC3(canvas_item_set_custom_rect, RID, bool, const Rect2 &)
 	FUNC2(canvas_item_set_modulate, RID, const Color &)
 	FUNC2(canvas_item_set_self_modulate, RID, const Color &)
+	FUNC2(canvas_item_set_parallax_depth, RID, float)
 
 	FUNC2(canvas_item_set_draw_behind_parent, RID, bool)
 	FUNC2(canvas_item_set_use_identity_transform, RID, bool)

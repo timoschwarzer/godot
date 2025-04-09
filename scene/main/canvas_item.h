@@ -92,6 +92,7 @@ private:
 	int z_index = 0;
 	bool z_relative = true;
 	bool y_sort_enabled = false;
+	float parallax_depth = 0.f;
 
 	Window *window = nullptr;
 	bool visible = true;
@@ -286,6 +287,9 @@ public:
 
 	virtual void set_y_sort_enabled(bool p_enabled);
 	virtual bool is_y_sort_enabled() const;
+
+	void set_parallax_depth(float parallax_depth);
+	float get_parallax_depth();
 
 	/* DRAWING API */
 

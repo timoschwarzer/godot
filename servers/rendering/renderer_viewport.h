@@ -54,6 +54,8 @@ public:
 		RID camera;
 		RID scenario;
 
+		Vector2 parallax_center = Vector2(0.5, 0.5);
+
 		RS::ViewportScaling3DMode scaling_3d_mode = RenderingServer::VIEWPORT_SCALING_3D_MODE_BILINEAR;
 		float scaling_3d_scale = 1.0;
 		float fsr_sharpness = 0.2f;
@@ -300,6 +302,8 @@ public:
 	void viewport_set_vrs_mode(RID p_viewport, RS::ViewportVRSMode p_mode);
 	void viewport_set_vrs_update_mode(RID p_viewport, RS::ViewportVRSUpdateMode p_mode);
 	void viewport_set_vrs_texture(RID p_viewport, RID p_texture);
+
+	void viewport_set_parallax_center(RID p_viewport, const Vector2 &p_parallax_center);
 
 	void handle_timestamp(String p_timestamp, uint64_t p_cpu_time, uint64_t p_gpu_time);
 

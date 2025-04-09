@@ -676,7 +676,7 @@ void RendererViewport::_draw_viewport(Viewport *p_viewport) {
 				ptr = ptr->filter_next_ptr;
 			}
 
-			RSG::canvas->render_canvas(p_viewport->render_target, canvas, xform, canvas_lights, canvas_directional_lights, clip_rect, p_viewport->texture_filter, p_viewport->texture_repeat, p_viewport->snap_2d_transforms_to_pixel, p_viewport->snap_2d_vertices_to_pixel, p_viewport->canvas_cull_mask, &p_viewport->render_info);
+			RSG::canvas->render_canvas(p_viewport->render_target, canvas, xform, canvas_lights, canvas_directional_lights, clip_rect, p_viewport->texture_filter, p_viewport->texture_repeat, p_viewport->snap_2d_transforms_to_pixel, p_viewport->snap_2d_vertices_to_pixel, p_viewport->canvas_cull_mask, p_viewport->size, p_viewport->parallax_center, &p_viewport->render_info);
 			if (RSG::canvas->was_sdf_used()) {
 				p_viewport->sdf_active = true;
 			}
@@ -1582,6 +1582,13 @@ void RendererViewport::viewport_set_vrs_texture(RID p_viewport, RID p_texture) {
 
 	RSG::texture_storage->render_target_set_vrs_texture(viewport->render_target, p_texture);
 	_configure_3d_render_buffers(viewport);
+}
+
+void RendererViewport::viewport_set_parallax_center(RID p_viewport, const Vector2 &p_parallax_center) {
+	Viewport *viewport = viewport_owner.get_or_null(p_viewport);
+	ERR_FAIL_NULL(viewport);
+
+	viewport->parallax_center = p_parallax_center;
 }
 
 bool RendererViewport::free(RID p_rid) {

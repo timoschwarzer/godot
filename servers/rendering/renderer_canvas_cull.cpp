@@ -33,6 +33,7 @@
 #include "core/config/project_settings.h"
 #include "core/math/geometry_2d.h"
 #include "core/math/transform_interpolator.h"
+#include "editor/property_translations.gen.h"
 #include "renderer_viewport.h"
 #include "rendering_server_default.h"
 #include "rendering_server_globals.h"
@@ -353,6 +354,28 @@ void RendererCanvasCull::_cull_canvas_item(Item *p_canvas_item, const Transform2
 		}
 
 		final_xform = parent_xform * self_xform;
+
+		if (p_canvas_item->parallax_depth != 0.f) {
+			Vector2 viewport_center = Vector2(viewport_size) * viewport_parallax_center;
+
+			// Vector2 parallax_translation = (final_xform.get_origin() - Vector2(viewport_size) * viewport_parallax_center) * (p_canvas_item->parallax_scale);
+			// parallax_translation *= final_xform.get_scale();
+			// final_xform = final_xform.translated(parallax_translation);
+
+			// constexpr real_t CAMERA_Z = 10.f;
+			// const real_t projection_plane_depth = CAMERA_Z;
+			// const real_t projected_x = final_xform.get_origin().x * projection_plane_depth / p_canvas_item->parallax_depth;
+			// const real_t projected_y = final_xform.get_origin().y * projection_plane_depth / p_canvas_item->parallax_depth;
+			// print_line(projected_x, projected_y);
+
+			const real_t projected_x = (final_xform.get_origin().x - viewport_center.x) / (p_canvas_item->parallax_depth / 1.0) + viewport_center.x;
+			const real_t projected_y = (final_xform.get_origin().y - viewport_center.y) / (p_canvas_item->parallax_depth / 1.0) + viewport_center.y;
+
+			final_xform = Transform2D(
+				0.0,
+				Vector2(projected_x, projected_y)
+			);
+		}
 	}
 
 	Point2 repeat_size = p_repeat_size;
@@ -481,11 +504,13 @@ void RendererCanvasCull::_cull_canvas_item(Item *p_canvas_item, const Transform2
 	}
 }
 
-void RendererCanvasCull::render_canvas(RID p_render_target, Canvas *p_canvas, const Transform2D &p_transform, RendererCanvasRender::Light *p_lights, RendererCanvasRender::Light *p_directional_lights, const Rect2 &p_clip_rect, RenderingServer::CanvasItemTextureFilter p_default_filter, RenderingServer::CanvasItemTextureRepeat p_default_repeat, bool p_snap_2d_transforms_to_pixel, bool p_snap_2d_vertices_to_pixel, uint32_t canvas_cull_mask, RenderingMethod::RenderInfo *r_render_info) {
+void RendererCanvasCull::render_canvas(RID p_render_target, Canvas *p_canvas, const Transform2D &p_transform, RendererCanvasRender::Light *p_lights, RendererCanvasRender::Light *p_directional_lights, const Rect2 &p_clip_rect, RenderingServer::CanvasItemTextureFilter p_default_filter, RenderingServer::CanvasItemTextureRepeat p_default_repeat, bool p_snap_2d_transforms_to_pixel, bool p_snap_2d_vertices_to_pixel, uint32_t canvas_cull_mask, const Size2i &p_viewport_size, const Vector2 &p_viewport_parallax_center, RenderingMethod::RenderInfo *r_render_info) {
 	RENDER_TIMESTAMP("> Render Canvas");
 
 	sdf_used = false;
 	snapping_2d_transforms_to_pixel = p_snap_2d_transforms_to_pixel;
+	viewport_size = p_viewport_size;
+	viewport_parallax_center = p_viewport_parallax_center;
 
 	if (p_canvas->children_order_dirty) {
 		p_canvas->child_items.sort();
@@ -560,6 +585,7 @@ void RendererCanvasCull::canvas_set_parent(RID p_canvas, RID p_parent, float p_s
 RID RendererCanvasCull::canvas_item_allocate() {
 	return canvas_item_owner.allocate_rid();
 }
+
 void RendererCanvasCull::canvas_item_initialize(RID p_rid) {
 	canvas_item_owner.initialize_rid(p_rid);
 	Item *instance = canvas_item_owner.get_or_null(p_rid);
@@ -691,6 +717,13 @@ void RendererCanvasCull::canvas_item_set_self_modulate(RID p_item, const Color &
 	ERR_FAIL_NULL(canvas_item);
 
 	canvas_item->self_modulate = p_color;
+}
+
+void RendererCanvasCull::canvas_item_set_parallax_depth(RID p_item, float p_parallax_depth) {
+	Item *canvas_item = canvas_item_owner.get_or_null(p_item);
+	ERR_FAIL_NULL(canvas_item);
+
+	canvas_item->parallax_depth = p_parallax_depth;
 }
 
 void RendererCanvasCull::canvas_item_set_draw_behind_parent(RID p_item, bool p_enable) {
